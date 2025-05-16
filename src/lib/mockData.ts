@@ -1,213 +1,276 @@
 
-import { NetworkDevice, Building, Alert, ResponseTimeData, Status } from './types';
+import { NetworkDevice, Building, Alert, MetricPoint, ResponseTimeData, Status } from './types';
 
-// Network Devices
+// Mock network devices
 export const devices: NetworkDevice[] = [
   {
-    id: "r-001",
-    name: "Main Campus Router",
-    type: "router",
-    location: "Admin Building",
-    status: "healthy",
-    ipAddress: "10.0.1.1",
+    id: 'dev-1',
+    name: 'Primary Router',
+    type: 'router',
+    location: 'Admin Building',
+    status: 'healthy',
+    ipAddress: '192.168.1.1',
     lastUpdated: new Date(Date.now() - 120000).toISOString(),
     responseTime: 5
   },
   {
-    id: "s-001",
-    name: "CS Dept Switch",
-    type: "switch",
-    location: "Computer Science Building",
-    status: "healthy",
-    ipAddress: "10.0.2.1",
+    id: 'dev-2',
+    name: 'Science Lab Switch',
+    type: 'switch',
+    location: 'Science Building',
+    status: 'warning',
+    ipAddress: '192.168.2.1',
+    lastUpdated: new Date(Date.now() - 360000).toISOString(),
+    responseTime: 35
+  },
+  {
+    id: 'dev-3',
+    name: 'Library AP-1',
+    type: 'access-point',
+    location: 'Library',
+    status: 'healthy',
+    ipAddress: '192.168.3.10',
+    lastUpdated: new Date(Date.now() - 90000).toISOString(),
+    responseTime: 12
+  },
+  {
+    id: 'dev-4',
+    name: 'Dorm Block-A Router',
+    type: 'router',
+    location: 'Dormitory A',
+    status: 'critical',
+    ipAddress: '192.168.4.1',
+    lastUpdated: new Date(Date.now() - 600000).toISOString(),
+    responseTime: 120
+  },
+  {
+    id: 'dev-5',
+    name: 'Admin Server',
+    type: 'server',
+    location: 'Admin Building',
+    status: 'healthy',
+    ipAddress: '192.168.1.10',
     lastUpdated: new Date(Date.now() - 180000).toISOString(),
     responseTime: 8
   },
   {
-    id: "ap-001",
-    name: "Library AP 1",
-    type: "access-point",
-    location: "Library",
-    status: "warning",
-    ipAddress: "10.0.3.1",
-    lastUpdated: new Date(Date.now() - 240000).toISOString(),
+    id: 'dev-6',
+    name: 'Engineering AP-1',
+    type: 'access-point',
+    location: 'Engineering Building',
+    status: 'healthy',
+    ipAddress: '192.168.5.10',
+    lastUpdated: new Date(Date.now() - 150000).toISOString(),
+    responseTime: 15
+  },
+  {
+    id: 'dev-7',
+    name: 'Student Center Switch',
+    type: 'switch',
+    location: 'Student Center',
+    status: 'warning',
+    ipAddress: '192.168.6.1',
+    lastUpdated: new Date(Date.now() - 420000).toISOString(),
     responseTime: 45
-  },
-  {
-    id: "s-002",
-    name: "Dorm Block A Switch",
-    type: "switch",
-    location: "Residential Hall A",
-    status: "critical",
-    ipAddress: "10.0.4.1",
-    lastUpdated: new Date(Date.now() - 360000).toISOString(),
-    responseTime: 250
-  },
-  {
-    id: "ap-002",
-    name: "Student Center AP",
-    type: "access-point",
-    location: "Student Center",
-    status: "healthy",
-    ipAddress: "10.0.5.1",
-    lastUpdated: new Date(Date.now() - 60000).toISOString(),
-    responseTime: 12
-  },
-  {
-    id: "srv-001",
-    name: "Authentication Server",
-    type: "server",
-    location: "Data Center",
-    status: "healthy",
-    ipAddress: "10.0.6.1",
-    lastUpdated: new Date(Date.now() - 90000).toISOString(),
-    responseTime: 3
   }
 ];
 
-// Campus Buildings
+// Mock buildings
 export const buildings: Building[] = [
   {
-    id: "bld-001",
-    name: "Admin Building",
+    id: 'bldg-1',
+    name: 'Admin Building',
     coordinates: [100, 150],
-    devices: ["r-001"],
-    status: "healthy"
+    devices: ['dev-1', 'dev-5'],
+    status: 'healthy'
   },
   {
-    id: "bld-002",
-    name: "Computer Science Building",
+    id: 'bldg-2',
+    name: 'Science Building',
     coordinates: [250, 100],
-    devices: ["s-001"],
-    status: "healthy"
+    devices: ['dev-2'],
+    status: 'warning'
   },
   {
-    id: "bld-003",
-    name: "Library",
+    id: 'bldg-3',
+    name: 'Library',
     coordinates: [400, 200],
-    devices: ["ap-001"],
-    status: "warning"
+    devices: ['dev-3'],
+    status: 'healthy'
   },
   {
-    id: "bld-004",
-    name: "Residential Hall A",
+    id: 'bldg-4',
+    name: 'Dormitory A',
     coordinates: [150, 300],
-    devices: ["s-002"],
-    status: "critical"
+    devices: ['dev-4'],
+    status: 'critical'
   },
   {
-    id: "bld-005",
-    name: "Student Center",
+    id: 'bldg-5',
+    name: 'Engineering Building',
     coordinates: [300, 350],
-    devices: ["ap-002"],
-    status: "healthy"
+    devices: ['dev-6'],
+    status: 'healthy'
   },
   {
-    id: "bld-006",
-    name: "Data Center",
+    id: 'bldg-6',
+    name: 'Student Center',
     coordinates: [450, 100],
-    devices: ["srv-001"],
-    status: "healthy"
+    devices: ['dev-7'],
+    status: 'warning'
   }
 ];
 
-// Alerts
+// Mock alerts
 export const alerts: Alert[] = [
   {
-    id: "alert-001",
-    deviceId: "ap-001",
-    deviceName: "Library AP 1",
-    message: "High latency detected",
-    timestamp: new Date(Date.now() - 240000).toISOString(),
-    severity: "warning",
+    id: 'alert-1',
+    deviceId: 'dev-4',
+    deviceName: 'Dorm Block-A Router',
+    message: 'Device is offline and unreachable',
+    timestamp: new Date(Date.now() - 600000).toISOString(),
+    severity: 'critical',
     resolved: false
   },
   {
-    id: "alert-002",
-    deviceId: "s-002",
-    deviceName: "Dorm Block A Switch",
-    message: "Device unreachable",
+    id: 'alert-2',
+    deviceId: 'dev-2',
+    deviceName: 'Science Lab Switch',
+    message: 'High latency detected (35ms)',
     timestamp: new Date(Date.now() - 360000).toISOString(),
-    severity: "critical",
+    severity: 'warning',
     resolved: false
   },
   {
-    id: "alert-003",
-    deviceId: "r-001",
-    deviceName: "Main Campus Router",
-    message: "High CPU usage",
-    timestamp: new Date(Date.now() - 1200000).toISOString(),
-    severity: "warning",
+    id: 'alert-3',
+    deviceId: 'dev-7',
+    deviceName: 'Student Center Switch',
+    message: 'Packet loss detected (5%)',
+    timestamp: new Date(Date.now() - 420000).toISOString(),
+    severity: 'warning',
+    resolved: false
+  },
+  {
+    id: 'alert-4',
+    deviceId: 'dev-1',
+    deviceName: 'Primary Router',
+    message: 'Memory usage above 90%',
+    timestamp: new Date(Date.now() - 900000).toISOString(),
+    severity: 'warning',
     resolved: true
   },
   {
-    id: "alert-004",
-    deviceId: "ap-002",
-    deviceName: "Student Center AP",
-    message: "Intermittent connectivity",
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    severity: "warning",
+    id: 'alert-5',
+    deviceId: 'dev-5',
+    deviceName: 'Admin Server',
+    message: 'Service restarted successfully',
+    timestamp: new Date(Date.now() - 1200000).toISOString(),
+    severity: 'healthy',
     resolved: true
   }
 ];
 
-// Generate response time data for the past 24 hours
-const generateTimeSeriesData = (baseValue: number, variance: number): ResponseTimeData => {
-  const now = Date.now();
-  const data = [];
-  for (let i = 0; i < 24; i++) {
-    data.push({
-      timestamp: new Date(now - (23 - i) * 3600000).toISOString(),
-      value: baseValue + (Math.random() * variance * 2 - variance)
-    });
-  }
-  return data;
-};
-
+// Mock response time data - Fix the structure to match the ResponseTimeData type
 export const responseTimeData: ResponseTimeData[] = [
   {
-    building: "Admin Building",
-    data: generateTimeSeriesData(10, 5)
+    building: 'Admin Building',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 5 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 6 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 5 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 7 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 8 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 5 }
+    ]
   },
   {
-    building: "Computer Science Building",
-    data: generateTimeSeriesData(12, 7)
+    building: 'Science Building',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 15 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 18 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 22 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 28 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 32 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 35 }
+    ]
   },
   {
-    building: "Library",
-    data: generateTimeSeriesData(25, 20)
+    building: 'Library',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 10 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 12 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 9 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 11 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 13 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 12 }
+    ]
   },
   {
-    building: "Residential Hall A",
-    data: generateTimeSeriesData(40, 40)
+    building: 'Dormitory A',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 25 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 30 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 45 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 60 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 90 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 120 }
+    ]
   },
   {
-    building: "Student Center",
-    data: generateTimeSeriesData(15, 8)
+    building: 'Engineering Building',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 12 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 13 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 14 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 15 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 14 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 15 }
+    ]
+  },
+  {
+    building: 'Student Center',
+    data: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), value: 22 },
+      { timestamp: new Date(Date.now() - 3000000).toISOString(), value: 25 },
+      { timestamp: new Date(Date.now() - 2400000).toISOString(), value: 30 },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), value: 35 },
+      { timestamp: new Date(Date.now() - 1200000).toISOString(), value: 40 },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), value: 45 }
+    ]
   }
 ];
 
-// Network Status Overview
+// Utility functions for mocked data
 export const getStatusCounts = () => {
-  const counts = { healthy: 0, warning: 0, critical: 0, total: devices.length };
+  const counts = {
+    healthy: 0,
+    warning: 0,
+    critical: 0,
+    total: devices.length
+  };
+  
   devices.forEach(device => {
-    counts[device.status as Status]++;
+    counts[device.status]++;
   });
+  
   return counts;
 };
 
-// Utility functions
-export const formatTime = (isoString: string): string => {
-  const date = new Date(isoString);
-  return date.toLocaleTimeString();
+export const formatTime = (isoString: string) => {
+  return new Date(isoString).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
 };
 
-export const getRelativeTime = (isoString: string): string => {
+export const getRelativeTime = (isoString: string) => {
   const date = new Date(isoString);
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
   
-  if (seconds < 60) return `${seconds} sec ago`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hrs ago`;
+  if (seconds < 60) return `${seconds} seconds ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
   return `${Math.floor(seconds / 86400)} days ago`;
 };
+
