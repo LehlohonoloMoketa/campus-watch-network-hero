@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NetworkStatusOverview from '@/components/NetworkStatusOverview';
@@ -17,7 +16,7 @@ const Index = () => {
   
   // Get the most recent unresolved incidents
   const recentIncidents = incidents
-    .filter(incident => !incident.resolved)
+    .filter(incident => incident.status !== 'resolved' && incident.status !== 'dismissed')
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     .slice(0, 3);
 
